@@ -1,116 +1,56 @@
-
 package unit_03;
 
 
-/*
- * Synchronization in Java is the capability to control the access of multiple threads to any shared resource.
- * Java Synchronization is better option where we want to allow only one thread to access the shared resource.
- * 
- * The synchronization is mainly used to
- * To prevent thread interference
- * To prevent consistency problem.
- * 
- * 
- * join(): When the join() method is invoked, 
- * the current thread stops its execution and the thread goes into the wait state. 
- * The current thread remains in the wait state until the thread on which the join() method is invoked has achieved
- * its dead state. If interruption of the thread occurs, 
- * then it throws the InterruptedException.
- * 
- */
-
-public class P16_MultiThreading_Synchronization {
+public class P16_MultiThreading_RunOrStart {
 
 	public static void main(String[] args) {
 		
-
-		WebCount obj = new WebCount();
-
-		Thread threadOne = new Thread(new Runnable() 
-		{
-			@Override
-			public void run() {
-				for (int i = 1; i <= 1000; i++) {
-					
-					//System.out.println("In threadOne:"+i);
-
-					obj.webcount();
-					//System.out.println("In threadOne "+WebCount.count);
-					
-					
-
-				}
-				
-
-			}
-		});
-
-		Thread threadTwo = new Thread(new Runnable() 
-		{
-			@Override
-			public void run() {
-				
-				for (int i = 1; i <= 1000; i++) 
-				{
-
-					//System.out.println("In threadTwo:"+i);
-					
-					obj.webcount();
-					//System.out.println("In threadTwo "+WebCount.count);
-					
-
-				}
-			}
-		});
-
-		threadOne.start();
+		/*
+		 * in java main is also a thread with priority 5
+		 * it also act like any other thread and follows concurrent execution
+		 * 
+		 * main is first thread to get into running state
+		 * main thread is terminated at last as it performs many shutdown operations
+		 */
 		
-		threadTwo.start();
+		new Thread3().start();
+		//calling start method
 		
+		//with directly calling run() method
+		//new Thread3().run();
 		
-
-		//Waits for this thread to die. {Main thread will wait until this thread is finished}
-		try 
+		for(int i=0;i<1000;i++)
 		{
-			threadOne.join();
-			
-		} 
-		catch (InterruptedException e) 
-		{
-			
-			e.printStackTrace();
+			System.out.println("In Thread Main:"+i);
 		}
 		
-		//Waits for this thread to die. {Main thread will wait until this thread is finished}
-		try 
-		{
-			threadTwo.join();
-		} 
-		catch (InterruptedException e) 
-		{
-			
-			e.printStackTrace();
-		}
-
-		System.out.println("Count: " + WebCount.count);
-
-
+		
 	}
 
 }
 
+/*
+ * Thread in Java can be created in two ways:
+ * 1. By extending Thread class
+ * 2. By implementing Runnable interface
+ * 
+ * We need to write function of thread inside run() method
+ * run() method is overrided
+ * 
+ * for executing a thread we need to call start() method which puts the thread into runnable state in the queue
+ * when thread gets CPU time run() method is automatically called and thread is put into running state
+ * 
+ * if we directly calls run method then there will be sequential execution not concurrent
+ * 
+ */
 
-class WebCount {
-
-	public static int count = 0;
-
-	//You want T1 to complete first and then T2 
-	public synchronized void webcount() {
-		
-		//If not synchronized then, T1 and T2 may read the same value of count at 
-		//the same time and may increment same time as well
-		count++;
-		
-		//System.out.println(count);
+class Thread3 extends Thread
+{
+	public void run()
+	{
+		for(int i=0;i<1000;i++)
+		{
+			System.out.println("In Thread3:"+i);
+		}
 	}
 }
